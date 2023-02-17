@@ -48,20 +48,34 @@ This project is undertaken under mentorship of Dr. Victor Fung (\textit{Georgia 
 
 \subsection*{Message-Passing Graph Neural Networks}
 
-Graph neural networks (GNNs) have become increasingly popular in the materials science space, and can be used on a variety of tasks, including property inference, synthesis prediction, and structure generation\cite{Reiser2022}. In principle, GNNs are able to perform convolutions over arbitrary inputs with standardized feature dimensions, and offer the advantage of working with atomic structures that easily translate to graphs. Message-passing (MP) GNNs propagate information between adjacent nodes across bonds, a concept used in modern graph convolutional operators such as in CGCNN\cite{Xie_2018}. Each atom in a structure is a node in the graph, and is assigned a vector of node attributes encoding chemical and neighboring properties. Bonds are represented by edges and are assigned vectorial attributes encoding spatial information (\ref{fig:vec-reps}). Molecular property inference involves scalar-valued predictions given graph inputs. A common pipeline involves a series of convolutional layers followed by a set of fully-connected classification layers to provide a global readout value (\ref{fig:e2e}).
+Graph neural networks (GNNs) have become increasingly popular in the materials science space, and can be used on a variety of tasks, including property inference, synthesis prediction, and structure generation\cite{Reiser2022}. In principle, GNNs are able to perform convolutions over arbitrary inputs with standardized feature dimensions, and offer the advantage of working with atomic structures that easily translate to graphs. A graph $G=(v,e,u)$ is represented by a set of nodes $v$, edges $e$, and global properties $u$. Nodes are assigned attributes ${\bf x}\in \mathbb{R}^{n}$ and edges ${\bf e}\in \mathbb{R}^m$. Message-passing (MP) GNNs propagate information between adjacent nodes $v_i,v_j$ across $e_{ij}$, a concept used in modern graph convolutional operators such as in CGCNN\cite{Xie_2018} which perform complex node attribute update schemes of the form in \ref{eq:mpupdate} where $\bigoplus$ is a differentiable, permutation-invariant reduction such as mean, max, sum and $\gamma,\phi$ are multilayer perceptrons (MLPs).
+
+\begin{equation}
+    \mathbf{x}_i^{(k)} = \gamma^{(k)} \left( \mathbf{x}_i^{(k-1)}, \bigoplus_{j \in \mathcal{N}(i)} \, \phi^{(k)}\left(\mathbf{x}_i^{(k-1)}, \mathbf{x}_j^{(k-1)},\mathbf{e}_{j,i}\right) \right)
+    \label{eq:mpupdate}
+\end{equation}
+
+Each atom in a structure is a node in the graph, and is assigned a vector of node attributes encoding chemical and neighboring properties. Bonds are represented by edges and are assigned vectorial attributes encoding spatial information (\ref{fig:messagep}). Molecular property inference involves scalar-valued predictions given graph inputs. A common pipeline involves a series of convolutional layers followed by a set of fully-connected classification layers to provide a global readout value (\ref{fig:pipeline}).
 
 \begin{figure*}[h]
     \centering
-    \includegraphics[scale=0.4]{gnn-e2e.png}
-    \caption{End-to-end GNN property inference task\cite{sanchez-lengeling2021a}}
-    \label{fig:e2e}
+    \includegraphics[width=\textwidth]{mdl-vn-pipeline.drawio.png}
+    \caption{Volumetric methane uptake inference pipeline with virtual nodes in MatDeepLearn\cite{fung2021benchmarking}}
+    \label{fig:pipeline}
 \end{figure*}
 
-\begin{figure*}
+\begin{figure}
     \centering
-    \includegraphics[scale=0.4]{graph-rep.drawio.png}
-    \caption{Node and edge vector attributes}
-    \label{fig:vec-reps}
+    \includegraphics[scale=0.25]{unitcell-vn.drawio.png}
+    \caption{Unit cell with virtual node mesh}
+    \label{fig:unitcell}
+\end{figure}
+
+\begin{figure*}[h]
+    \centering
+    \includegraphics[scale=0.2]{graph-rep-vn.drawio.png}
+    \caption{Selective message passing}
+    \label{fig:messagep}
 \end{figure*}
 
 \subsection*{hMOF Dataset}
@@ -70,7 +84,7 @@ Metal-organic frameworks (MOFs) are composed of modular building blocks that for
 
 \subsection*{Virtual Nodes for Graph Structures}
 
-Crystal structures are an infinite system, and GNNs use the smallest repeating unit (unit cell) as an approximation for the system. Virtual nodes can be situated along the 3D boundary conditions describing the unit cell to form a controllable mesh. Each virtual node is described by a node attribute vector and is connected via edges to real and virtual nodes.
+Crystal structures are an infinite system GNNs use the graph of the smallest repeating unit (unit cell) as an approximation for the system, described by a set of basis vectors. Virtual nodes are throughout the unit cell parallepiped to form a controllable mesh\ref{fig:unitcell}. Each virtual node is described by a node attribute vector and is connected via edges to real and virtual nodes\ref{fig:messagep}.
 
 \section*{Project objective and goals}
 
@@ -93,10 +107,7 @@ Anand Radhakrishnan and I will arrive on Sunday, November 13, 2022, and return t
 
 \section*{Acknowledgments}
 
-This work used OLCF Summit under Director's Discretionary allocation CFD154 and
-XSEDE resources under allocation TG-PHY210084.
-We also acknowledge hardware awards from the NVIDIA Academic Hardware Grants
-program.
+NERSC DOE HPC resources, PACE supercomputer, CoC supercomputer. Grants if applicable.
 
 \bibliographystyle{ieee_fullname}
 \bibliography{references}
