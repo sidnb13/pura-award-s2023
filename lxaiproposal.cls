@@ -77,8 +77,8 @@
 \setlength{\hoffset       }{-1 in}
 \setlength{\oddsidemargin }{ 14mm}
 \setlength{\evensidemargin}{ 14mm}
-\setlength{\textwidth     }{182mm}
-\setlength{\topmargin     }{ 14mm}
+\setlength{\textwidth     }{186mm}
+\setlength{\topmargin     }{ 6mm}
 \setlength{\headheight    }{  0mm}
 \setlength{\headsep       }{  7mm}
 \setlength{\topskip       }{  5mm}
@@ -90,7 +90,7 @@
 \flushbottom
 \normalsize
 \AtBeginDocument{%
-   \setlength{\floatsep}       {5mm}
+   \setlength{\floatsep}       {3mm}
    \setlength{\textfloatsep}   {3mm}
    \setlength{\intextsep}      {3mm}
    \setlength{\dblfloatsep}    {\floatsep}
